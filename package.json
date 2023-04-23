@@ -1,0 +1,78 @@
+{
+  "name": "alerts-manager",
+  "version": "1.0.0",
+  "description": "A proposal to build a more efficient alert system for the government of Canada.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lagbana/alerts-manager.git"
+  },
+  "author": "Larry Agbana",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@fastify/cors": "^8.2.1",
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/swagger-ui": "^1.8.0",
+    "axios": "^1.3.4",
+    "bullmq": "^3.10.3",
+    "bunyan": "^1.8.15",
+    "bunyan-debug-stream": "^3.1.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.15.0",
+    "fastify-plugin": "^4.5.0",
+    "ioredis": "^5.3.2",
+    "lodash": "^4.17.21",
+    "mongodb": "^3.6.0",
+    "typeorm": "^0.3.13",
+    "xml2js": "^0.5.0",
+    "zod": "^3.21.4"
+  },
+  "homepage": "https://github.com/Lagbana/alerts-manager#readme",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "start:dev": "nodemon --watch src -e ts --exec ts-node src/index.ts",
+    "build": "tsc",
+    "eslint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint": "eslint --ext .ts src/",
+    "lint:fix": "eslint --ext .ts src/ --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "type-check:ci": "tsc --noEmit --pretty",
+    "type-check:ci:watch": "tsc --noEmit --pretty --watch",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage",
+    "test:debug": "node --inspect-brk -r ts-node/register node_modules/.bin/jest --runInBand"
+  },
+  "engine": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "Node",
+    "TypeOrm",
+    "Express",
+    "Typescript",
+    "Postgres",
+    "Docker"
+  ],
+  "devDependencies": {
+    "@types/bunyan": "^1.8.8",
+    "@types/dotenv": "^8.2.0",
+    "@types/ioredis": "^5.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/xml2js": "^0.4.11",
+    "@types/lodash": "^4.14.192",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "^8.37.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}

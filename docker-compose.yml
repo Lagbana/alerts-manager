@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MONGO_URL: mongodb://mongo:27017/my-database # Use the service name "mongo" to connect to the MongoDB container
+      REDIS_URL: redis://redis:6379 # Use the service name "redis" to connect to the Redis container
+      REDIS_PASSWORD: "mysecretpassword" # Set the Redis password
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./src:/app/src # Mount the src directory as a volume
+      - ./package.json:/app/package.json # Mount the package.json file as a volume
+    command: npm start
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ./data:/data/db # Mount a host directory as a data volume for MongoDB persistence
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: "mysecretpassword" # Set the Redis password
