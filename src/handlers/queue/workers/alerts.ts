@@ -36,100 +36,96 @@ export const handleAlertsDataAggregation = async (job: Job) => {
   const { data: alertUrl } = job;
 
   try {
-    if (typeof alertUrl === "string") {
-      const { data } = await axios.get(alertUrl);
+    const { data } = await axios.get(alertUrl);
 
-      const alert = await parser.parseStringPromise(data);
-      const alertService = alertApplicationService({ logger, dataSource });
+    const alert = await parser.parseStringPromise(data);
+    const alertService = alertApplicationService({ logger, dataSource });
 
-      const { alert: alertData } = alert;
-      const identifier = alertData.identifier[0];
+    const { alert: alertData } = alert;
+    const identifier = alertData.identifier[0];
 
-      if (!identifier?.length) {
-        logger.warn(`Early return. Alert identifier not found: ${alertUrl}`);
-        return;
-      }
-
-      const previousAlert = await alertService.findOne({
-        identifier: { $eq: identifier },
-      });
-
-      if (alertData?.references?.length > 0) {
-        const alertEndpointInfo = processNestedAlertReferences(
-          alertData.references
-        );
-        if (alertEndpointInfo && alertEndpointInfo?.length > 0)
-          AlertsQueue.addBulk(alertEndpointInfo);
-      }
-
-      if (previousAlert) {
-        return;
-      }
-
-      logger.info(`Alert data Aggregation: ${alertUrl}`);
-
-      const infos: Array<Info> = alertData.info.map((info: any) => {
-        return {
-          language: getFirstItem(info.language),
-          category: getFirstItem(info.category),
-          event: getFirstItem(info.event),
-          responseType: getFirstItem(info?.responseType),
-          urgency: getFirstItem(info.urgency),
-          severity: getFirstItem(info.severity),
-          certainty: getFirstItem(info.certainty),
-          audience: getFirstItem(info.audience),
-          eventCode: info.eventCode.map((eventCode: any) => ({
-            name: getFirstItem(eventCode.valueName),
-            value: getFirstItem(eventCode.value),
-          })),
-          effective: getFirstItem(info.effective),
-          expires: getFirstItem(info.expires),
-          senderName: getFirstItem(info.senderName),
-          headline: getFirstItem(info.headline),
-          description: getFirstItem(info.description),
-          instruction: getFirstItem(info.instruction),
-          web: getFirstItem(info.web),
-          parameter: info.parameter.map((parameter: any) => ({
-            name: getFirstItem(parameter.valueName),
-            value: getFirstItem(parameter.value),
-          })),
-          area: info.area.map((area: any) => ({
-            areaDesc: getFirstItem(area.areaDesc),
-            polygon: getFirstItem(area.polygon),
-            geocode: area.geocode.map((geoCode: any) => ({
-              name: getFirstItem(geoCode.valueName),
-              value: getFirstItem(geoCode.value),
-            })),
-          })),
-        };
-      });
-
-      const newAlert = {
-        xmlns: alertData.$["xmlns"],
-        identifier: getFirstItem(alertData.identifier),
-        sender: getFirstItem(alertData.sender),
-        sent: getFirstItem(alertData.sent),
-        status: getFirstItem(alertData.status),
-        msgType: getFirstItem(alertData.msgType),
-        source: getFirstItem(alertData.source),
-        scope: getFirstItem(alertData.scope),
-        code: alertData.code,
-        note: getFirstItem(alertData.note),
-        references: getFirstItem(alertData.references),
-        info: infos,
-        signature: JSON.stringify(alertData.Signature),
-      } as Alert;
-
-      // Non blocking operation to save alert data
-      alertService.create(newAlert);
-
-      // Return the alert data from the job, used to send the alert to the client
-      return { status: "success", alert: newAlert };
-    } else {
-      logger.error(`Early return. Alert url not found: ${alertUrl}`);
+    if (!identifier?.length) {
+      logger.warn(`Early return. Alert identifier not found: ${alertUrl}`);
+      return;
     }
+
+    const previousAlert = await alertService.findOne({
+      identifier: { $eq: identifier },
+    });
+
+    if (alertData?.references?.length > 0) {
+      const alertEndpointInfo = processNestedAlertReferences(
+        alertData.references
+      );
+      if (alertEndpointInfo && alertEndpointInfo?.length > 0)
+        AlertsQueue.addBulk(alertEndpointInfo);
+    }
+
+    if (previousAlert) {
+      return;
+    }
+
+    logger.info(`Alert data Aggregation: ${alertUrl}`);
+
+    const infos: Array<Info> = alertData.info.map((info: any) => {
+      return {
+        language: getFirstItem(info.language),
+        category: getFirstItem(info.category),
+        event: getFirstItem(info.event),
+        responseType: getFirstItem(info?.responseType),
+        urgency: getFirstItem(info.urgency),
+        severity: getFirstItem(info.severity),
+        certainty: getFirstItem(info.certainty),
+        audience: getFirstItem(info.audience),
+        eventCode: info.eventCode.map((eventCode: any) => ({
+          name: getFirstItem(eventCode.valueName),
+          value: getFirstItem(eventCode.value),
+        })),
+        effective: getFirstItem(info.effective),
+        expires: getFirstItem(info.expires),
+        senderName: getFirstItem(info.senderName),
+        headline: getFirstItem(info.headline),
+        description: getFirstItem(info.description),
+        instruction: getFirstItem(info.instruction),
+        web: getFirstItem(info.web),
+        parameter: info.parameter.map((parameter: any) => ({
+          name: getFirstItem(parameter.valueName),
+          value: getFirstItem(parameter.value),
+        })),
+        area: info.area.map((area: any) => ({
+          areaDesc: getFirstItem(area.areaDesc),
+          polygon: getFirstItem(area.polygon),
+          geocode: area.geocode.map((geoCode: any) => ({
+            name: getFirstItem(geoCode.valueName),
+            value: getFirstItem(geoCode.value),
+          })),
+        })),
+      };
+    });
+
+    const newAlert = {
+      xmlns: alertData.$["xmlns"],
+      identifier: getFirstItem(alertData.identifier),
+      sender: getFirstItem(alertData.sender),
+      sent: getFirstItem(alertData.sent),
+      status: getFirstItem(alertData.status),
+      msgType: getFirstItem(alertData.msgType),
+      source: getFirstItem(alertData.source),
+      scope: getFirstItem(alertData.scope),
+      code: alertData.code,
+      note: getFirstItem(alertData.note),
+      references: getFirstItem(alertData.references),
+      info: infos,
+      signature: JSON.stringify(alertData.Signature),
+    } as Alert;
+
+    // Non blocking operation to save alert data
+    alertService.create(newAlert);
+
+    // Return the alert data from the job, used to send the alert to the client
+    return { status: "success", alert: newAlert };
   } catch (error) {
-    console.log(alertUrl)
+    console.log(alertUrl);
     logger.error(`Error processing alerts: ${error}. Alert url: ${alertUrl}`);
   }
 };

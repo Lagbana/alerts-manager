@@ -1,4 +1,4 @@
-# Alerts System
+# Alerts Manager
 
 The National Alert Aggregation and Dissemination (NAAD) System collects public alerting messages from Authorized Government Agencies (AGA) and makes them available to Last Mile Distributors (LMD) such as radio and television stations, as well as cable and satellite TV companies for display to Canadians, thereby helping forewarn the Canadian public of any imminent danger related to persons or property. This User Manual will provide the information needed for interested LMDs to receive and efficiently monitor alert messages disseminated through the NAAD system.
 
