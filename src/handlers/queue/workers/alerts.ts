@@ -38,6 +38,10 @@ export const handleAlertsDataAggregation = async (job: Job) => {
   try {
     const { data } = await axios.get(alertUrl);
 
+    if (!data) {
+      return;
+    }
+
     const alert = await parser.parseStringPromise(data);
     const alertService = alertApplicationService({ logger, dataSource });
 

@@ -27,6 +27,10 @@ export const handleAlertHeartbeat = async (job: Job) => {
       data: { data },
     } = job;
 
+    if (!data) {
+      return;
+    }
+
     logger.debug(`Processing alerts heartbeat`);
 
     const { alert } = await parser.parseStringPromise(

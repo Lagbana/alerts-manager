@@ -15,6 +15,10 @@ export const handleGeoRssDataAggregation = async (job: Job) => {
       data: { data },
     } = job;
 
+    if (!data) {
+      return;
+    }
+
     logger.debug(`Processing GeoRSS data`);
 
     const {
