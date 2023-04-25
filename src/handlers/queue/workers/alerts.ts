@@ -53,16 +53,16 @@ export const handleAlertsDataAggregation = async (job: Job) => {
       identifier: { $eq: identifier },
     });
 
+    if (previousAlert) {
+      return;
+    }
+
     if (alertData?.references?.length > 0) {
       const alertEndpointInfo = processNestedAlertReferences(
         alertData.references
       );
       if (alertEndpointInfo && alertEndpointInfo?.length > 0)
         AlertsQueue.addBulk(alertEndpointInfo);
-    }
-
-    if (previousAlert) {
-      return;
     }
 
     logger.info(`Alert data Aggregation: ${alertUrl}`);
@@ -127,5 +127,6 @@ export const handleAlertsDataAggregation = async (job: Job) => {
   } catch (error) {
     console.log(alertUrl);
     logger.error(`Error processing alerts: ${error}. Alert url: ${alertUrl}`);
+    throw error;
   }
 };

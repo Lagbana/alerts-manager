@@ -1,8 +1,4 @@
-import { config } from "dotenv";
 import { ServerConfig } from "./types";
-
-// Load the environment variables from the .env file
-config();
 
 // Define the local and production configurations
 

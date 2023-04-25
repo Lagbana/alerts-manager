@@ -1,5 +1,9 @@
+import { config } from "dotenv";
 import type { DataSourceOptions } from "typeorm";
 import { Alert, EventCode } from "../entity";
+
+// Load the environment variables from the .env file
+config();
 
 const isDev = process.env.NODE_ENV === "development";
 const baseConfig: DataSourceOptions = {

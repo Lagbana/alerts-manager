@@ -117,6 +117,5 @@ bull --> georss-feed
 bull --> alerts-feed
 
 alerts-feed --> mongo-db
-georss-feed --> mongo-db
 
 ```
